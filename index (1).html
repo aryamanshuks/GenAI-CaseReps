@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CaseReps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #12233A;
+    --ink-soft: #47566B;
+    --page: #E9ECF1;
+    --surface: #FFFFFF;
+    --line: #D3D9E2;
+    --accent: #2247C7;
+    --accent-ink: #FFFFFF;
+    --hit: #157347;
+    --hit-bg: #E4F1E9;
+    --partial: #B4690E;
+    --miss: #C0392B;
+    --miss-bg: #F7E7E5;
+    --box-shadow: 0 1px 2px rgba(18,35,58,.06), 0 8px 24px rgba(18,35,58,.06);
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --ink: #EAEEF5;
+      --ink-soft: #9FB0C6;
+      --page: #0E1622;
+      --surface: #17222F;
+      --line: #2A3949;
+      --accent: #5A82F5;
+      --accent-ink: #0E1622;
+      --hit: #56C98B;
+      --hit-bg: #16311F;
+      --partial: #E0A24A;
+      --miss: #EF7A6E;
+      --miss-bg: #38201D;
+      --box-shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #EAEEF5;
+    --ink-soft: #9FB0C6;
+    --page: #0E1622;
+    --surface: #17222F;
+    --line: #2A3949;
+    --accent: #5A82F5;
+    --accent-ink: #0E1622;
+    --hit: #56C98B;
+    --hit-bg: #16311F;
+    --partial: #E0A24A;
+    --miss: #EF7A6E;
+    --miss-bg: #38201D;
+    --box-shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 22px 20px 64px; }
+
+  header.top {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; padding-bottom: 18px; margin-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -.02em; }
+  .brand span { color: var(--accent); }
+  .tag { color: var(--ink-soft); font-size: 13px; }
+
+  h1.hero {
+    font-family: 'Archivo', sans-serif; font-weight: 700;
+    font-size: clamp(26px, 6vw, 38px); line-height: 1.08; letter-spacing: -.02em;
+    margin: 4px 0 10px;
+  }
+  .lede { color: var(--ink-soft); font-size: 15px; max-width: 52ch; margin: 0 0 26px; }
+
+  .panel {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px; box-shadow: var(--box-shadow);
+  }
+  .panel + .panel { margin-top: 16px; }
+
+  .field-label { font-size: 12px; font-weight: 600; color: var(--ink-soft); margin-bottom: 8px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    padding: 8px 13px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: transparent; color: var(--ink);
+    transition: border-color .12s, background .12s, color .12s;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+  .row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .row > div { flex: 1 1 200px; }
+
+  button.primary {
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 16px;
+    background: var(--accent); color: var(--accent-ink); border: none;
+    padding: 14px 22px; border-radius: 11px; cursor: pointer; width: 100%;
+    transition: filter .12s;
+  }
+  button.primary:hover { filter: brightness(1.06); }
+  button.ghost {
+    font-family: inherit; font-weight: 600; font-size: 14px;
+    background: transparent; color: var(--ink); border: 1px solid var(--line);
+    padding: 11px 16px; border-radius: 10px; cursor: pointer;
+  }
+  button.ghost:hover { border-color: var(--accent); color: var(--accent); }
+  button:focus-visible, .chip:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .stats { display: flex; gap: 26px; margin-top: 18px; color: var(--ink-soft); font-size: 13px; }
+  .stats b { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 22px; color: var(--ink); font-weight: 600; }
+
+  /* drill */
+  .drill-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+  .case-meta { font-size: 12px; color: var(--ink-soft); }
+  .case-meta b { color: var(--accent); font-weight: 600; }
+  .timer {
+    font-family: 'IBM Plex Mono', monospace; font-weight: 600;
+    font-size: clamp(30px, 9vw, 46px); line-height: 1; letter-spacing: -.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer.warn { color: var(--partial); }
+  .timer.crit { color: var(--miss); }
+
+  .case-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 19px; margin: 0 0 8px; letter-spacing: -.01em; }
+  .case-body { font-size: 15px; color: var(--ink); }
+  .case-body p { margin: 0 0 10px; }
+
+  textarea {
+    width: 100%; min-height: 150px; resize: vertical; margin-top: 6px;
+    font-family: inherit; font-size: 15px; line-height: 1.55; color: var(--ink);
+    background: var(--page); border: 1px solid var(--line); border-radius: 10px; padding: 13px;
+  }
+  .hint { font-size: 12px; color: var(--ink-soft); margin-top: 8px; }
+
+  /* results */
+  .score-head { display: flex; align-items: center; gap: 18px; margin-bottom: 6px; }
+  .score-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 46px; line-height: 1; }
+  .score-label { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 18px; }
+  .pushback { background: var(--miss-bg); border-left: 3px solid var(--miss); padding: 12px 14px; border-radius: 8px; font-size: 14px; margin: 14px 0; }
+  .pushback.ok { background: var(--hit-bg); border-left-color: var(--hit); }
+
+  .buckets { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 8px; }
+  .buckets li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--line); }
+  .buckets li.hit { background: var(--hit-bg); border-color: transparent; }
+  .buckets li.miss { background: var(--miss-bg); border-color: transparent; }
+  .mark { font-family: 'IBM Plex Mono', monospace; font-weight: 600; flex: none; }
+  .buckets li.hit .mark { color: var(--hit); }
+  .buckets li.miss .mark { color: var(--miss); }
+  .bucket-name { font-weight: 600; }
+  .bucket-hint { color: var(--ink-soft); }
+
+  .model { background: var(--page); border-radius: 10px; padding: 14px; font-size: 14px; margin-top: 4px; }
+  .model .field-label { margin-bottom: 6px; }
+  .curve { font-size: 14px; margin-top: 12px; }
+  .curve b { color: var(--accent); }
+
+  .result-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .result-actions button { flex: 1 1 140px; }
+
+  footer.note { margin-top: 30px; color: var(--ink-soft); font-size: 12px; text-align: center; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Case<span>Reps</span></div>
+    <div class="tag">honest reps, five minutes each</div>
+  </header>
+
+  <!-- START -->
+  <section id="start">
+    <h1 class="hero">Structure a case. Get scored on it. No compliments.</h1>
+    <p class="lede">Pick a case type, set your clock, and write your framework before the timer runs out. You get a coverage score, the branches you missed, and one line of pushback.</p>
+
+    <div class="panel">
+      <div class="field-label">Case type</div>
+      <div class="chips" id="typeChips"></div>
+
+      <div style="height:18px"></div>
+      <div class="field-label">Structuring window</div>
+      <div class="chips" id="diffChips">
+        <button class="chip" data-sec="240" data-diff="Relaxed">Relaxed · 4:00</button>
+        <button class="chip" data-sec="180" data-diff="Standard" aria-pressed="true">Standard · 3:00</button>
+        <button class="chip" data-sec="120" data-diff="Interview" >Interview · 2:00</button>
+      </div>
+
+      <div style="height:22px"></div>
+      <button class="primary" id="startBtn">Start drill</button>
+
+      <div class="stats" id="stats"></div>
+    </div>
+    <footer class="note">Everything runs in your browser. Nothing is uploaded.</footer>
+  </section>
+
+  <!-- DRILL -->
+  <section id="drill" class="hidden">
+    <div class="panel">
+      <div class="drill-head">
+        <div class="case-meta"><b id="dType"></b> · <span id="dDiff"></span></div>
+        <div class="timer" id="timer">3:00</div>
+      </div>
+      <h2 class="case-title" id="cTitle"></h2>
+      <div class="case-body" id="cBody"></div>
+    </div>
+
+    <div class="panel">
+      <div class="field-label">Your structure</div>
+      <textarea id="answer" placeholder="Lead with a hypothesis, then lay out your branches. e.g. This looks like a revenue problem. I would split it into: 1) revenue (price, volume, mix) ..."></textarea>
+      <div class="hint">Name your branches and say which one you would test first. Interviewers reward a hypothesis, not a checklist.</div>
+      <div style="height:16px"></div>
+      <button class="primary" id="scoreBtn">Score my structure</button>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="hidden">
+    <div class="panel">
+      <div class="score-head">
+        <div class="score-num" id="scoreNum">0</div>
+        <div>
+          <div class="score-label" id="scoreVerdict"></div>
+          <div class="case-meta" id="coverageLine"></div>
+        </div>
+      </div>
+      <div class="pushback" id="pushback"></div>
+
+      <div class="field-label">Branch coverage</div>
+      <ul class="buckets" id="bucketList"></ul>
+
+      <div class="model">
+        <div class="field-label">Model structure</div>
+        <div id="modelText"></div>
+      </div>
+      <div class="curve" id="curveWrap"><b>Curveball:</b> <span id="curveText"></span></div>
+
+      <div class="result-actions">
+        <button class="primary" id="nextBtn">Next case</button>
+        <button class="ghost" id="retryBtn">Retry this case</button>
+        <button class="ghost" id="homeBtn">Back to start</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+"use strict";
+
+const CASES = [
+  {
+    id: "prof-retail", type: "Profitability", title: "SpiceRoute Retail",
+    body: "SpiceRoute, a mid-market grocery chain, has seen profits fall 18% over two years while revenue is roughly flat. The CEO wants to know why and where to act. How would you structure this?",
+    buckets: [
+      { name: "Revenue drivers", hint: "price, volume, product mix", keys: ["revenue","price","pricing","volume","quantity","mix","basket","sales"] },
+      { name: "Cost drivers", hint: "fixed vs variable, COGS", keys: ["cost","cogs","fixed","variable","expense","overhead","margin","wastage","shrink"] },
+      { name: "Segmentation", hint: "by store, region, or product line", keys: ["segment","store","region","product line","category","channel","sku"] },
+      { name: "External context", hint: "competition, demand, macro", keys: ["compet","market","demand","external","macro","customer","economy"] }
+    ],
+    model: "Anchor on Profit = Revenue - Cost. Revenue is flat, so decompose it into price x volume x mix and check whether a mix shift to low-margin items is hiding a volume drop. Split cost into fixed vs variable and look for margin leakage (shrinkage, COGS inflation). Segment by store, region, and category to localize the fall. Overlay external context (a new discounter, demand shift). Lead with a hypothesis: flat revenue plus falling profit points to a cost or margin-mix problem, so I would test that branch first.",
+    curve: "Same-store volume is flat but margin per basket fell 12%. Where do you look first?"
+  },
+  {
+    id: "prof-airline", type: "Profitability", title: "AeroNimbus Airways",
+    body: "AeroNimbus, a budget airline, is posting record-high load factors but its profit per flight has dropped sharply this year. Walk me through how you would find the cause.",
+    buckets: [
+      { name: "Revenue side", hint: "yield/ticket price, ancillary, load factor", keys: ["revenue","yield","fare","ticket","price","ancillary","load factor","seat"] },
+      { name: "Cost side", hint: "fuel, labour, lease, maintenance", keys: ["cost","fuel","labour","labor","crew","lease","maintenance","airport","fee"] },
+      { name: "Route / network", hint: "route or hub-level profitability", keys: ["route","network","hub","segment","destination","frequency"] },
+      { name: "External", hint: "fuel price, competition, regulation", keys: ["fuel price","compet","external","regulat","macro","demand"] }
+    ],
+    model: "Full seats but falling profit is the tension to resolve. On revenue, high load factor with weak profit usually means yield or fare has fallen (discounting to fill seats); check ancillary revenue too. On cost, budget carriers are fuel- and lease-heavy, so a fuel spike or a new aircraft lease could swamp the gain. Break profitability down by route to see if a few loss-making routes drag the average. Then external drivers: fuel price, a price war. Hypothesis first: the airline is buying load factor with fare cuts, so revenue-per-seat is the branch I test first.",
+    curve: "Load factor is at an all-time high. Why could that be bad news, not good?"
+  },
+  {
+    id: "size-ev", type: "Market sizing", title: "EV charging points in Chandigarh",
+    body: "Estimate how many public EV charging points Chandigarh will need by 2030. Talk me through your approach and assumptions.",
+    buckets: [
+      { name: "Vehicle base", hint: "population to number of vehicles", keys: ["population","vehicle","car","households","fleet","registered"] },
+      { name: "EV adoption", hint: "EV share by 2030", keys: ["adoption","penetration","ev share","percent","%","electric share"] },
+      { name: "Charging behaviour", hint: "sessions per EV, home vs public", keys: ["charge","session","frequency","kwh","home charging","public","dwell","usage"] },
+      { name: "Supply ratio", hint: "how many EVs one point serves", keys: ["per point","ratio","utilization","utilisation","points per","capacity","serve"] }
+    ],
+    model: "Go top-down. Start from Chandigarh's vehicle population, apply a 2030 EV penetration assumption to get the EV fleet. Estimate charging sessions per EV per week, then split public vs home charging (most private cars charge at home, so public demand is a fraction). Work out how many sessions one public point can serve per day given dwell time and hours. Chargers needed = public sessions required / sessions one charger serves. State every assumption out loud and sanity-check the final number against the fleet size.",
+    curve: "Assume home charging covers 70% of demand. How does that change your estimate?"
+  },
+  {
+    id: "size-tennis", type: "Market sizing", title: "Tennis balls in India",
+    body: "Estimate the annual market for tennis balls in India, in units. Structure it before you calculate.",
+    buckets: [
+      { name: "Player base", hint: "how many people play, by type", keys: ["player","population","participation","club","academy","school","base"] },
+      { name: "Usage rate", hint: "balls consumed per player per year", keys: ["balls per","usage","frequency","replacement","matches","consume","wear"] },
+      { name: "Segments", hint: "recreational vs competitive vs coaching", keys: ["recreational","competitive","coaching","segment","professional","casual"] },
+      { name: "Other channels", hint: "schools, academies, pro circuit", keys: ["school","academy","tournament","pro","circuit","institution","bulk"] }
+    ],
+    model: "Segment the player base rather than guessing one number: recreational players, competitive/club players, and coaching academies plus schools. Assign a plausible count to each (top-down from urban population and participation rate). Then a balls-per-year usage rate per segment: competitive players and academies churn far more balls than casual players. Multiply and sum. Add institutional channels (schools, tournaments). Sanity-check per-capita consumption against a country where tennis is bigger.",
+    curve: "Coaching academies buy in bulk and reuse balls heavily. How do you adjust their usage rate?"
+  },
+  {
+    id: "entry-coffee", type: "Market entry", title: "European coffee chain enters India",
+    body: "A European specialty coffee chain is deciding whether to enter India. Should they? Structure how you would evaluate the decision.",
+    buckets: [
+      { name: "Market attractiveness", hint: "size, growth, consumer behaviour", keys: ["market size","growth","demand","consumption","attractive","tam","consumer"] },
+      { name: "Competition", hint: "incumbents and differentiation", keys: ["compet","incumbent","starbucks","cafe","rival","differentiat","local player"] },
+      { name: "Company fit / right to win", hint: "brand, supply chain, cost", keys: ["capability","brand","supply","right to win","cost","fit","strength","sourcing"] },
+      { name: "Entry mode + economics", hint: "own vs franchise vs JV, unit economics", keys: ["entry mode","franchise","joint venture","jv","greenfield","invest","unit econ","breakeven","profit","payback"] },
+      { name: "Risks", hint: "regulation, execution", keys: ["risk","regulat","execution","exit","downside"] }
+    ],
+    model: "Use a market-competition-company spine, then an entry-mode and economics layer. Market: is the specialty-coffee segment large and growing, and how do Indian consumers behave (tea-first, price-sensitive)? Competition: strong incumbents (local chains, global brands) and where the entrant can differentiate. Company: does the chain have a genuine right to win (brand, sourcing, cost). Then entry mode: own stores vs franchise vs JV, and the unit economics and breakeven per store. Close with risks and a clear recommendation driven by a hypothesis, not a neutral list.",
+    curve: "Indian coffee-shop culture skews price-sensitive and tea-first. Does your recommendation survive that?"
+  },
+  {
+    id: "entry-streaming", type: "Market entry", title: "US streamer enters Southeast Asia",
+    body: "A US streaming service is considering launching across Southeast Asia. Should they, and how would you structure the assessment?",
+    buckets: [
+      { name: "Market opportunity", hint: "subscribers, growth, connectivity", keys: ["market","subscriber","growth","penetration","demand","size","connectivity","mobile"] },
+      { name: "Competition", hint: "local and global incumbents", keys: ["compet","incumbent","netflix","local","rival","player"] },
+      { name: "Content / localization", hint: "local content, language, licensing", keys: ["content","local","language","dubbing","subtitle","licens","catalog"] },
+      { name: "Monetization", hint: "pricing, ARPU, ads, payment rails", keys: ["pricing","arpu","ad","advertis","willingness to pay","payment","monetiz","tier"] },
+      { name: "Risks / regulation", hint: "piracy, regulation", keys: ["piracy","pirate","regulat","risk","censor"] }
+    ],
+    model: "Market: population and internet/mobile penetration are large and growing, but skew mobile-first. Competition: strong local and regional streamers plus global players already present. Content: winning needs local-language originals and licensing, which is a real cost line, not an afterthought. Monetization: ARPU is far below the US, so the model likely has to be low-price or ad-supported and mobile-first, with working local payment rails. Risks: piracy and regulation. Recommend based on whether a defensible, localized, low-ARPU model clears the content cost.",
+    curve: "ARPU is a fifth of US levels and piracy is rampant. What monetization model do you propose?"
+  }
+];
+
+const PRIORITY_WORDS = ["hypothesis","first","start","prioriti","biggest","test","i would begin","begin with","lead with","most likely"];
+
+const state = { caseObj: null, sec: 180, diff: "Standard", timeLeft: 180, timerId: null, type: "Profitability" };
+
+const $ = (id) => document.getElementById(id);
+
+/* ---- storage (guarded) ---- */
+function loadAttempts() {
+  try { return JSON.parse(localStorage.getItem("casereps_attempts_v1") || "[]"); }
+  catch (e) { return []; }
+}
+function saveAttempt(a) {
+  try {
+    const list = loadAttempts(); list.push(a);
+    localStorage.setItem("casereps_attempts_v1", JSON.stringify(list.slice(-200)));
+  } catch (e) {}
+}
+
+/* ---- start screen ---- */
+function buildTypeChips() {
+  const types = [...new Set(CASES.map(c => c.type))];
+  const host = $("typeChips");
+  host.innerHTML = "";
+  const all = document.createElement("button");
+  all.className = "chip"; all.textContent = "Mixed"; all.dataset.type = "Mixed";
+  all.setAttribute("aria-pressed", "true");
+  host.appendChild(all);
+  types.forEach(t => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = t; b.dataset.type = t;
+    b.setAttribute("aria-pressed", "false");
+    host.appendChild(b);
+  });
+  state.type = "Mixed";
+  host.addEventListener("click", (e) => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    [...host.children].forEach(c => c.setAttribute("aria-pressed", "false"));
+    b.setAttribute("aria-pressed", "true");
+    state.type = b.dataset.type;
+  });
+}
+
+function bindDiff() {
+  const host = $("diffChips");
+  host.addEventListener("click", (e) => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    [...host.children].forEach(c => c.setAttribute("aria-pressed", "false"));
+    b.setAttribute("aria-pressed", "true");
+    state.sec = parseInt(b.dataset.sec, 10);
+    state.diff = b.dataset.diff;
+  });
+}
+
+function renderStats() {
+  const list = loadAttempts();
+  const host = $("stats");
+  if (!list.length) { host.innerHTML = '<div>No reps yet. Your first one sets the baseline.</div>'; return; }
+  const avg = Math.round(list.reduce((s, a) => s + a.score, 0) / list.length);
+  const week = list.filter(a => Date.now() - a.ts < 7 * 864e5).length;
+  host.innerHTML =
+    '<div><b>' + list.length + '</b>total reps</div>' +
+    '<div><b>' + avg + '</b>avg structure</div>' +
+    '<div><b>' + week + '</b>this week</div>';
+}
+
+/* ---- drill ---- */
+function pickCase() {
+  const pool = state.type === "Mixed" ? CASES : CASES.filter(c => c.type === state.type);
+  const avoid = state.caseObj ? state.caseObj.id : null;
+  const options = pool.length > 1 ? pool.filter(c => c.id !== avoid) : pool;
+  return options[Math.floor(Math.random() * options.length)];
+}
+
+function fmt(s) { const m = Math.floor(s / 60); const r = s % 60; return m + ":" + String(r).padStart(2, "0"); }
+
+function startTimer() {
+  clearInterval(state.timerId);
+  state.timeLeft = state.sec;
+  const el = $("timer");
+  const paint = () => {
+    el.textContent = fmt(state.timeLeft);
+    el.classList.toggle("warn", state.timeLeft <= state.sec * 0.5 && state.timeLeft > state.sec * 0.2);
+    el.classList.toggle("crit", state.timeLeft <= state.sec * 0.2);
+  };
+  paint();
+  state.timerId = setInterval(() => {
+    state.timeLeft--;
+    if (state.timeLeft <= 0) { state.timeLeft = 0; paint(); clearInterval(state.timerId); el.textContent = "time"; return; }
+    paint();
+  }, 1000);
+}
+
+function show(section) {
+  ["start", "drill", "results"].forEach(s => $(s).classList.toggle("hidden", s !== section));
+  window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+}
+
+function beginDrill(reuse) {
+  if (!reuse) state.caseObj = pickCase();
+  const c = state.caseObj;
+  $("dType").textContent = c.type;
+  $("dDiff").textContent = state.diff + " · " + fmt(state.sec);
+  $("cTitle").textContent = c.title;
+  $("cBody").innerHTML = "<p>" + c.body + "</p>";
+  $("answer").value = "";
+  show("drill");
+  startTimer();
+}
+
+/* ---- scoring ---- */
+function scoreAnswer() {
+  clearInterval(state.timerId);
+  const c = state.caseObj;
+  const raw = $("answer").value.trim();
+  const text = raw.toLowerCase();
+  const words = raw ? raw.split(/\s+/).length : 0;
+
+  const results = c.buckets.map(b => ({
+    name: b.name, hint: b.hint,
+    hit: b.keys.some(k => text.includes(k))
+  }));
+  const covered = results.filter(r => r.hit).length;
+  const total = results.length;
+  const coverage = covered / total;
+
+  const hasPriority = PRIORITY_WORDS.some(w => text.includes(w));
+  const branchSignal = /\n|\d\)|\d\.|first|second|third|•|-\s/.test(raw) || (raw.match(/,/g) || []).length >= 2;
+
+  // score: coverage 75, structure/priority 25
+  let score = Math.round(coverage * 75 + (hasPriority ? 15 : 0) + (branchSignal ? 10 : 0));
+  if (words < 12) score = Math.min(score, 35);
+  score = Math.max(0, Math.min(100, score));
+
+  let verdict, push, ok = false;
+  if (words < 12) {
+    verdict = "Too thin"; push = "That is a list of topics, not a structure. Name your branches and say what you would check inside each one.";
+  } else if (coverage < 0.5) {
+    verdict = "Missing branches"; push = "You are missing major branches, so this is not MECE yet. A " + c.type.toLowerCase() + " case falls apart without them.";
+  } else if (coverage >= 0.75 && !hasPriority) {
+    verdict = "Broad, not committed"; push = "Good coverage, but you did not commit. Lead with a hypothesis and say which branch you would test first. Interviewers reward direction, not a checklist.";
+  } else if (coverage >= 0.75 && hasPriority) {
+    verdict = "Interview-ready"; ok = true; push = "Clean and committed. Now sharpen it: make sure every branch ties back to the question, and be ready to defend your first move under pushback.";
+  } else {
+    verdict = "Solid start"; push = "Reasonable spread. Tighten it into 2 to 3 clean branches and state your first move so it reads as a hypothesis, not a survey.";
+  }
+
+  $("scoreNum").textContent = score;
+  $("scoreVerdict").textContent = verdict;
+  $("coverageLine").textContent = covered + " of " + total + " branches covered";
+  const pb = $("pushback"); pb.textContent = push; pb.classList.toggle("ok", ok);
+
+  const ul = $("bucketList"); ul.innerHTML = "";
+  results.forEach(r => {
+    const li = document.createElement("li");
+    li.className = r.hit ? "hit" : "miss";
+    li.innerHTML = '<span class="mark">' + (r.hit ? "hit" : "gap") + '</span>' +
+      '<span><span class="bucket-name">' + r.name + '</span> <span class="bucket-hint">' + r.hint + '</span></span>';
+    ul.appendChild(li);
+  });
+
+  $("modelText").textContent = c.model;
+  $("curveText").textContent = c.curve;
+
+  saveAttempt({ caseId: c.id, score: score, ts: Date.now() });
+  show("results");
+}
+
+/* ---- wiring ---- */
+buildTypeChips();
+bindDiff();
+renderStats();
+
+$("startBtn").addEventListener("click", () => beginDrill(false));
+$("scoreBtn").addEventListener("click", scoreAnswer);
+$("nextBtn").addEventListener("click", () => beginDrill(false));
+$("retryBtn").addEventListener("click", () => beginDrill(true));
+$("homeBtn").addEventListener("click", () => { renderStats(); show("start"); });
+</script>
+</body>
+</html>
